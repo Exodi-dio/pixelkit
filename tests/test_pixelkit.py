@@ -74,8 +74,15 @@ def test_from_ascii_rejects_ragged_rows():
 def test_outline_rings_the_shape():
     art = ["..x..", ".xxx.", "xxxxx"]
     sprite = pk.from_ascii(art, {"x": (255, 0, 0)}).outline((0, 0, 0))
-    assert sprite.pixels[0][0][3] == 255    # corner filled by outline
+    assert sprite.pixels[0][1][3] == 255           # edge filled by outline
+    assert sprite.pixels[0][0][3] == 0             # diagonal-only corner left alone
     assert sprite.pixels[0][2][:3] == (255, 0, 0)  # core untouched
+
+
+def test_outline_diagonal_fills_corners():
+    art = ["..x..", ".xxx.", "xxxxx"]
+    sprite = pk.from_ascii(art, {"x": (255, 0, 0)}).outline((0, 0, 0), diagonal=True)
+    assert sprite.pixels[0][0][3] == 255
 
 
 def test_scaled_is_nearest_neighbour():
